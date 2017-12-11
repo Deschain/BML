@@ -6,21 +6,22 @@
 using namespace Rcpp;
 
 // BML
-List BML(IntegerMatrix ma, int ntrees, double pthres);
-RcppExport SEXP _BML_BML(SEXP maSEXP, SEXP ntreesSEXP, SEXP pthresSEXP) {
+List BML(IntegerMatrix ma, int ntrees, double pthres, int nrep);
+RcppExport SEXP _BML_BML(SEXP maSEXP, SEXP ntreesSEXP, SEXP pthresSEXP, SEXP nrepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerMatrix >::type ma(maSEXP);
     Rcpp::traits::input_parameter< int >::type ntrees(ntreesSEXP);
     Rcpp::traits::input_parameter< double >::type pthres(pthresSEXP);
-    rcpp_result_gen = Rcpp::wrap(BML(ma, ntrees, pthres));
+    Rcpp::traits::input_parameter< int >::type nrep(nrepSEXP);
+    rcpp_result_gen = Rcpp::wrap(BML(ma, ntrees, pthres, nrep));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BML_BML", (DL_FUNC) &_BML_BML, 3},
+    {"_BML_BML", (DL_FUNC) &_BML_BML, 4},
     {NULL, NULL, 0}
 };
 

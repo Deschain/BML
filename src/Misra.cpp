@@ -59,40 +59,25 @@ void InitNetRel(
     }
 }
 
-//TODO: Move output, from BootstrapAnalysis
-void TPFPAnalysis( vector<vector<int> >& NetRel1,vector<vector<int> >& NetRel2, vector<vector<int> >& NetRel3, vector<SimVar>& SimDAG, int& NRep, string& job)
+List TPFPAnalysis( vector<vector<int> >& NetRel1,vector<vector<int> >& NetRel2, vector<vector<int> >& NetRel3, vector<SimVar>& SimDAG, int& NRep)
 {
-    fstream relFile;
-    string tp="./output/TruePositives"+job;
-    relFile.open(tp.c_str(),ios::out);
-    relFile<<'\t'<<"Tree+DAG "<<'\t'<<"DAG"<<endl;
-    vector<int> Hist1, Hist2;
+    vector<int> Hist1(10,0);
+    vector<int> Hist2(10,0);
+  
+    IntegerVector truePositives_tree_dag;
+    IntegerVector truePositives_dag;
+    CharacterVector truePositives_names;
 
-    fstream TPconf;
-    string tpc="./output/ConfidenceTruePositives"+job;
-    TPconf.open(tpc.c_str(),ios::out);
-
-    fstream FPconf;
-    string fpc="./output/ConfidenceFalsePositives"+job;
-    FPconf.open(fpc.c_str(),ios::out);
-
-    for(int i=0;i<10;i++)
-    {
-        Hist1.push_back(0);
-        Hist2.push_back(0);
-
-    }
     for(size_t i=0;i<NetRel1.size()-1;i++)
     {
-
         for(size_t j=i+1;j<NetRel1.size();j++)
         {
             if(NetRel3[i][j]==1)
             {
-                relFile<<SimDAG[i].vname<<"-"<<SimDAG[j].vname<<'\t';
+                truePositives_names.push_back(SimDAG[i].vname+"-"+SimDAG[j].vname);
+                truePositives_tree_dag.push_back(NetRel1[i][j]);
+                truePositives_dag.push_back(NetRel2[i][j]);
 
-                relFile<<NetRel1[i][j]<<'\t'<<NetRel2[i][j];
-                relFile<<endl;
                 int bin1=int(10*NetRel1[i][j]/NRep);
                 int bin2=int(10*NetRel2[i][j]/NRep);
                 if(bin1==10){bin1=9;}
@@ -102,39 +87,45 @@ void TPFPAnalysis( vector<vector<int> >& NetRel1,vector<vector<int> >& NetRel2, 
             }
         }
     }
-    relFile<<endl<<endl;
-    relFile.close();
-    TPconf<<"Confidence"<<'\t'<<"Tree+DAG"<<'\t'<<"DAG"<<endl;
+    IntegerMatrix truePositives(truePositives_tree_dag.size(), 2);
+    truePositives(_, 0) = truePositives_tree_dag;
+    truePositives(_, 1) = truePositives_dag;
+    rownames(truePositives) = truePositives_names;
+    colnames(truePositives) = CharacterVector({"Tree-DAG", "DAG"});
+   
     int nted=0;
     int noed=0;
+
+    IntegerMatrix ConfidenceTruePositives(9,3);
+
     for(int i=9;i>0;i--)
     {
         nted+=Hist1[i];
         noed+=Hist2[i];
-        TPconf<<10*i<<'\t'<<nted<<'\t'<<noed<<endl;
+        ConfidenceTruePositives(9-i, 0) = 10*i;
+        ConfidenceTruePositives(9-i, 1) = nted;
+        ConfidenceTruePositives(9-i, 2) = noed;
         Hist1[i]=0;
         Hist2[i]=0;
     }
     Hist1[0]=0;
     Hist2[0]=0;
-    TPconf.close();
+    colnames(ConfidenceTruePositives) = CharacterVector({"Confidence", "Tree+DAG", "DAG"});
 
-    fstream relFile2;
-    string fp= "./output/FalsePositives"+job;
-    relFile2.open(fp.c_str(),ios::out);
-    relFile2<<'\t'<<"Tree+DAG "<<'\t'<<"DAG"<<endl;
+    IntegerVector falsePositives_tree_dag;
+    IntegerVector falsePositives_dag;
+    CharacterVector falsePositives_names;
 
     for(size_t i=0;i<NetRel1.size()-1;i++)
     {
-
         for(size_t j=i+1;j<NetRel1.size();j++)
         {
             if((NetRel1[i][j]+NetRel2[i][j]>0)&&(NetRel3[i][j]==0))
             {
-                relFile2<<SimDAG[i].vname<<"-"<<SimDAG[j].vname<<'\t';
+                falsePositives_names.push_back(SimDAG[i].vname+"-"+SimDAG[j].vname);
+                falsePositives_tree_dag.push_back(NetRel1[i][j]);
+                falsePositives_dag.push_back(NetRel2[i][j]);
 
-                relFile2<<NetRel1[i][j]<<'\t'<<NetRel2[i][j];
-                relFile2<<endl;
                 int bin1=int(10*NetRel1[i][j]/NRep);
                 int bin2=int(10*NetRel2[i][j]/NRep);
                 if(bin1==10){bin1=9;}
@@ -144,22 +135,38 @@ void TPFPAnalysis( vector<vector<int> >& NetRel1,vector<vector<int> >& NetRel2, 
             }
         }
     }
+    IntegerMatrix falsePositives(falsePositives_tree_dag.size(),2);
+    falsePositives(_,0) = falsePositives_tree_dag;
+    falsePositives(_,1) = falsePositives_dag;
+    rownames(falsePositives) = falsePositives_names;
+    colnames(falsePositives) = CharacterVector({"Tree-DAG", "DAG"});
 
-    relFile2.close();
     nted=0;
     noed=0;
-    FPconf<<"Confidence"<<'\t'<<"Tree+DAG"<<'\t'<<"DAG"<<endl;
+
+    IntegerMatrix confidenceFalsePositives(9,3);
     for(int i=9;i>0;i--)
     {
         nted+=Hist1[i];
         noed+=Hist2[i];
-        FPconf<<10*i<<'\t'<<nted<<'\t'<<noed<<endl;
+        confidenceFalsePositives(9-i,0) = 10*i;
+        confidenceFalsePositives(9-i,1) = nted;
+        confidenceFalsePositives(9-i,2) = noed;
         Hist1[i]=0;
         Hist2[i]=0;
     }
     Hist1[0]=0;
     Hist2[0]=0;
-    FPconf.close();
+    colnames(confidenceFalsePositives) = CharacterVector({"Confidence", "Tree+DAG", "DAG"});
+    
+    List result = List::create();
+    
+    result["TruePositives"] = truePositives;
+    result["ConfidenceTruePositives"] = ConfidenceTruePositives;
+    result["FalsePositives"] = falsePositives;
+    result["ConfidenceFalsePositives"] = confidenceFalsePositives;
+    
+    return result;
 }
 
 void ConfigParam(vector<SimVar>& SimDAG, vector<bool>& config, double& pratio)
@@ -594,70 +601,67 @@ void EdBoot(vector< vector<string> >& EdList, vector<SimVar>& SimDAG, vector< ve
     }
 }
 
-//TODO: Move output
-void ProbEdBoot(vector< vector<string> >& EdList, vector< vector<double> >& edrel, string& job)
+
+NumericMatrix ProbEdBoot(vector< vector<string> >& EdList, vector< vector<double> >& edrel)
 {
-    string edb= "./output/EdgeProbabilities"+job;
-    fstream edFile;
-    edFile.open(edb.c_str(),ios::out);
+    CharacterVector edge_names;
+    NumericMatrix   edge_probs(4*EdList.size(), edrel[0].size());
+    
     for(size_t ng=0;ng<EdList.size();ng++)
     {
-        edFile<<EdList[ng][0];
+        edge_names.push_back(EdList[ng][0]);
         for(size_t bp=0;bp< edrel[0].size();bp++)
         {
-            edFile<<'\t'<<edrel[3*ng][bp];
+            edge_probs(ng*4 + 0, bp) = edrel[3*ng][bp];
         }
-        edFile<<endl;
-        edFile<<EdList[ng][1];
+
+        edge_names.push_back(EdList[ng][1]);
         for(size_t bp=0;bp< edrel[0].size();bp++)
         {
-            edFile<<'\t'<<edrel[3*ng+1][bp];
+            edge_probs(ng*4 + 1, bp) = edrel[3*ng+1][bp];
         }
-        edFile<<endl;
-        edFile<<EdList[ng][0]<<","<<EdList[ng][1];
+
+        edge_names.push_back(EdList[ng][0]+","+EdList[ng][1]);
         for(size_t bp=0;bp< edrel[0].size();bp++)
         {
-            edFile<<'\t'<<edrel[3*ng+2][bp];
+            edge_probs(ng*4 + 2, bp) = edrel[3*ng+2][bp];
         }
-        edFile<<endl;
-        edFile<<EdList[ng][0]<<","<<EdList[ng][1]<<"(indep)";
+
+        edge_names.push_back(EdList[ng][0]+","+EdList[ng][1]+"(indep)");
         for(size_t bp=0;bp< edrel[0].size();bp++)
         {
-            edFile<<'\t'<<edrel[3*ng+1][bp]*edrel[3*ng][bp];
+            edge_probs(ng*4 + 3, bp) = edrel[3*ng+1][bp]*edrel[3*ng][bp];
         }
-        edFile<<endl;
     }
-    edFile.close();
+    rownames(edge_probs) = edge_names;
+    return edge_probs;
 }
 
-//TODO: Move output
-void ProbBootstrapAnalysis( vector<vector<double> >& NetRel1,vector<vector<double> >& NetRel2, vector<SimVar>& SimDAG, string& job)
+List ProbBootstrapAnalysis( vector<vector<double> >& NetRel1,vector<vector<double> >& NetRel2, vector<SimVar>& SimDAG)
 {
-    string lr1= "./output/OBS_Probabilities"+job;
-    string lr2= "./output/Tree_OBS_Probabilities"+job;
-
-    fstream relFile1;
-    fstream relFile2;
-
-    relFile1.open(lr1.c_str(),ios::out);
-    relFile2.open(lr2.c_str(),ios::out);
-
+    NumericMatrix obsProbabilities(NetRel1.size(),NetRel1[0].size());
+    NumericMatrix TreeObsProbabilities(NetRel1.size(),NetRel1[0].size());
+    
+    CharacterVector prob_names;
+    
     for(size_t i=0;i<NetRel1.size();i++)
     {
-        relFile1<<SimDAG[i].vname<<'\t';
-        relFile2<<SimDAG[i].vname<<'\t';
+        prob_names.push_back(SimDAG[i].vname);
 
         for(size_t j=0;j<NetRel1[0].size();j++)
         {
-            relFile1<<NetRel1[i][j]<<'\t';
-            relFile2<<NetRel2[i][j]<<'\t';
-
+          obsProbabilities(i,j) = NetRel1[i][j];
+          TreeObsProbabilities(i,j) = NetRel2[i][j];
         }
-        relFile1<<endl;
-        relFile2<<endl;
     }
-    relFile1.close();
-    relFile2.close();
+    
+    rownames(obsProbabilities) =  prob_names;   
+    rownames(TreeObsProbabilities) =  prob_names;
+    
+    List result = List::create();
+    result["OBS_Probabilities"] = obsProbabilities;
+    result["Tree_OBS_Probabilities"] = TreeObsProbabilities;
+    return result;
 }
 
 
@@ -672,21 +676,21 @@ void ExceptionHandler(int& ex)
 		case 1:
 			cerr<<"Please check the data matrix file.\nSee README file or look at the examples in the data folder for detailed formatting instructions.\nBailing Out !\n";
 			break;
-        case 2:
+    case 2:
 			cerr<<"child-parent relations awry. Failed the sanity check in InitTree.cpp";
 			break;
-        case 3:
-            cerr<<"Number of random restarts you entered is not a positive integer.\nPlease restart the analysis. \nBailing out !\n";
-            break;
-        case 4:
-            cerr<<"You must enter a number between 0 and 1 as the threshold for path reconstruction.\nPlease restart the analysis. \nBailing out !\n";
-            break;
-        case 5:
-            cerr<<"You must enter a positive integer for the number of bootstrap replicates.\nPlease restart the analysis. \nBailing out !\n";
-            break;
-        case 6:
-            cerr<<"You must enter 'y' or 'n' for the bootstrap option.\nPlease restart the analysis. \nBailing out !\n";
-            break;
+    case 3:
+      cerr<<"Number of random restarts you entered is not a positive integer.\nPlease restart the analysis. \nBailing out !\n";
+      break;
+    case 4:
+      cerr<<"You must enter a number between 0 and 1 as the threshold for path reconstruction.\nPlease restart the analysis. \nBailing out !\n";
+      break;
+    case 5:
+      cerr<<"You must enter a positive integer for the number of bootstrap replicates.\nPlease restart the analysis. \nBailing out !\n";
+      break;
+    case 6:
+      cerr<<"You must enter 'y' or 'n' for the bootstrap option.\nPlease restart the analysis. \nBailing out !\n";
+      break;
 	}
 }
 
@@ -1760,7 +1764,7 @@ List StructLearn(vector<vector<bool> >& Data,
     return result;
 }
 
-void BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int& NRep, string& job)
+List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int& NRep, string& job)
 {
     /* Edges present in Tree+OBSDAG, OBSDAG and SimDAG resp. */
     vector< vector<int> > netrel1, netrel2, netrel3;
@@ -1781,7 +1785,7 @@ void BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
 
         SimulateDAG(Tree, SimDAG, Data);
 
-        cout<<"\nGenerated bootstrap replicate "<<Brep<<" out of "<<NRep<<'\n';
+        Rcout<<"\nGenerated bootstrap replicate "<<Brep<<" out of "<<NRep<<'\n';
 
         GlobalPruning(BayesNP,Tree);
 
@@ -1807,17 +1811,18 @@ void BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
         vector<FAM> DAG(BayesNP.size());
 
         InitTree(Tree, BayesNP);
-        cout<<"tree initialized\n";
+        Rcout<<"tree initialized\n";
         InitDAG(DAG, BayesNP);
         LocalPruning(DAG,Tree);
 
         //double dagscore=0.0;
 
-        /*	Perform local search operations in tree space for imputing missing data values		*
-         *	in variable "Tree" using the MPE (Most Probable Explanation) criterion. 			*/
-
+        /*	
+          Perform local search operations in tree space for imputing missing data values
+         * in variable "Tree" using the MPE (Most Probable Explanation) criterion.
+         */
         SearchTrees(DAG,Tree);
-        cout<<Brep<<" out of "<<NRep<<" bootstrap replicates analyzed\n";
+        Rcout<<Brep<<" out of "<<NRep<<" bootstrap replicates analyzed\n";
         for(size_t i=0;i<netrel1.size();i++)
         {
             for(size_t j=0;j<netrel1.size();j++)
@@ -1828,7 +1833,13 @@ void BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
         LandBoot(SimDAG, landrel2, DAG);
         EdBoot(EdList,SimDAG,edrel, DAG);
     }
-    TPFPAnalysis(netrel1,netrel2,netrel3,SimDAG,NRep,job);
-    ProbBootstrapAnalysis(landrel1,landrel2,SimDAG,job);
-    ProbEdBoot(EdList, edrel,job);
+    
+    List result = TPFPAnalysis(netrel1,netrel2,netrel3,SimDAG,NRep);
+    
+    //Reduce coupling
+    List probs = ProbBootstrapAnalysis(landrel1,landrel2,SimDAG);
+    result["OBS_Probabilities"] = probs["OBS_Probabilities"];
+    result["Tree_OBS_Probabilities"] = probs["Tree_OBS_Probabilities"];
+    result["EdgeProbabilities"] = ProbEdBoot(EdList, edrel);
+    return result;
 }

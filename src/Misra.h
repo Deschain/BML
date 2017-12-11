@@ -88,4 +88,7 @@ Rcpp::List StructLearn(std::vector<std::vector<bool> >& Data,
                        int& NTrees, 
                        double& pthres);
 
-//void BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int& NRep, string& job);
+Rcpp::List BootstrapAnalysis(std::vector<std::vector<bool> >& Data, 
+                             std::vector<SimVar>& SimDAG, 
+                             int& NRep, 
+                             std::string& job);

@@ -27,7 +27,7 @@ tBoolMaxtrix transformMatrix(IntegerMatrix ma)
 }
 
 // [[Rcpp::export]]
-List BML(IntegerMatrix ma, int ntrees, double pthres) 
+List BML(IntegerMatrix ma, int ntrees, double pthres, int nrep) 
 {
   // Copied from original code
   srand(12345);
@@ -37,11 +37,14 @@ List BML(IntegerMatrix ma, int ntrees, double pthres)
   vector<string> names = as<vector<string> >(colnames(ma));
   vector<SimVar> SimDAG;
   
-  List result = StructLearn(data, 
-                            names, 
-                            SimDAG, 
-                            ntrees , 
-                            pthres);
+  List result = StructLearn(data, names, SimDAG, ntrees, pthres);
+  
+  string job = "test";
+  
+  if(nrep > 0)
+  {
+    result["bootstrap"] = BootstrapAnalysis(data, SimDAG, nrep, job);
+  }
   
   // List simdag_data = List::create();
   // 
