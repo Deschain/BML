@@ -1,7 +1,7 @@
 Package: BML
 Type: Package
 Title: R wraper of Bayesian Mutation Landscape
-Version: 1.0
+Version: 0.1.0
 Date: 2017-12-10
 Author: Oscar Rodriguez
 Maintainer: Oscar Rodriguez <oscar.rodriguezzalonna@estudiante.uam.es>

@@ -1,9 +1,11 @@
-bml <- function(file, ntree, pthres) {
+
+bml <- function(file, ntree, pthres, nrep) {
   data <- read.table(file, header = TRUE, row.names=1, skip = 1)
   stopifnot(ntree > 0)
   stopifnot(pthres > 0.0, pthres<1.0)
   # Add sanity checks
-  bml <- BML(as.matrix(data), ntree, pthres)
+  bml <- BML(as.matrix(data), ntree, pthres, nrep)
+  # Maybe store input data aswell
   attr(bml,'class') <- 'bml'
   return(bml)
 }
