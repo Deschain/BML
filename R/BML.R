@@ -1,12 +1,12 @@
 
-bml <- function(file, ntree, pthres, nrep) {
+bml <- function(file, ntree, threshold, rep = 0) {
   data <- read.table(file, header = TRUE, row.names=1, skip = 1)
   stopifnot(ntree > 0)
-  stopifnot(pthres > 0.0, pthres<1.0)
+  stopifnot(threshold > 0.0, threshold<1.0)
   # Add sanity checks
-  bml <- BML(as.matrix(data), ntree, pthres, nrep)
+  bml <- BML(as.matrix(data), ntree, threshold, rep)
   # Maybe store input data aswell
-  attr(bml,'class') <- 'bml'
+  class(bml) <- 'bml'
   return(bml)
 }
 
@@ -17,15 +17,21 @@ print.bml <- function(bml){
   cat("Number of genes with no parent after global pruning ", bml$num_noparent_after_global_pruning, "\n")
 }
 
-adm <- function(x){
-  UseMethod("adm", x)
+summary.bml <- function(bml) {
+  print(bml)
 }
 
-adm.bml <- function(bml) {
-  tmp <- cbind(match(bml$DAG$edges_1, aux$DAG$nodes), match(bml$DAG$edges_2, aux$DAG$nodes))
+
+adjacent_matrix <- function(bml) {
+  tmp <- cbind(match(bml$DAG$edges_1, bml$DAG$nodes), match(bml$DAG$edges_2, bml$DAG$nodes))
   adm <- matrix(0, length(bml$DAG$nodes), length(bml$DAG$nodes))
   adm[tmp] <- 1
   colnames(adm) <- bml$DAG$labels
   rownames(adm) <- bml$DAG$labels
   return(adm)
+}
+
+write.dot.bml <- function(bml, file = "")
+{
+  writeDotFile(bml, file)
 }

@@ -19,9 +19,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// writeDotFile
+void writeDotFile(List bml, std::string file);
+RcppExport SEXP _BML_writeDotFile(SEXP bmlSEXP, SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type bml(bmlSEXP);
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    writeDotFile(bml, file);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BML_BML", (DL_FUNC) &_BML_BML, 4},
+    {"_BML_writeDotFile", (DL_FUNC) &_BML_writeDotFile, 2},
     {NULL, NULL, 0}
 };
 
