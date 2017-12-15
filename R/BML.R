@@ -31,7 +31,7 @@ adjacent_matrix <- function(bml) {
   return(adm)
 }
 
-write.dot.bml <- function(bml, file = "")
+write.dot <- function(bml, file = "")
 {
   writeDotFile(bml, file)
 }
