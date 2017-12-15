@@ -1297,21 +1297,24 @@ void InitTree( vector<NODE>& Tree, vector<FAM>& BN)
 {
   
   vector<int> Orphans;
+  
   int Ntax=int(Tree.size());
   
   for(int i=1;i<Ntax;i++)
   {
     Orphans.push_back(i);
   }
+  
   vector<int> Nmut;
   for(int i=0;i<BN.size();i++)
   {
     Nmut.push_back(BN[i].nmut);
   }
+  
   for(int i=Ntax;i<2*Ntax-2;i++)
   {
     double y = (double) rand()/RAND_MAX;
-    int x = int(y*Orphans.size() - 1);
+    int x = int(y*(Orphans.size() - 1));
     int rchld=Orphans[x];
     
     Orphans.erase(Orphans.begin() +x);
@@ -1319,7 +1322,7 @@ void InitTree( vector<NODE>& Tree, vector<FAM>& BN)
     
     y = (double) rand()/RAND_MAX;
     
-    x= int(y*Orphans.size() - 1);
+    x= int(y*(Orphans.size() - 1));
     int lchld =Orphans[x];
     
     
@@ -2072,9 +2075,8 @@ List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
     SimulateDAG(Tree, SimDAG, Data);
     
     Rcout<<"\nGenerated bootstrap replicate "<<Brep<<" out of "<<NRep<<'\n';
-    
+
     GlobalPruning(BayesNP,Tree);
-    
     SearchDAGs(BayesNP,Tree,'n');
     for(int i=0;i<netrel2.size();i++)
     {
@@ -2093,7 +2095,6 @@ List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
     *	variable "Tree", cf. InitTree.cpp.													*/
     
     vector<FAM> DAG(BayesNP.size());					/*	Define the basic network object	*/
-    
     InitTree(Tree, BayesNP);
     Rcout<<"tree initialized\n";
     InitDAG(DAG, BayesNP);
