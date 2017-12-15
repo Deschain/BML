@@ -1,0 +1,20 @@
+digraph G {
+	rankdir= LR;
+	0 [label="Normal" ,shape=ellipse, style=filled, color="0.000,1.0,0.85",fontsize="36", font="Helvetica", fontcolor=white];
+255 [label="TP53,PTEN,NF1" ,shape=ellipse, style=filled, color="0.13000,1,0.99",fontsize="36", font="Helvetica", fontcolor=black];
+256 [label="TP53,PTEN,RB1" ,shape=ellipse, style=filled, color="0.13000,0.629465,0.99",fontsize="36", font="Helvetica", fontcolor=black];
+23 [label="TP53,PTEN" ,shape=ellipse, style=filled, color="0.11000,1,0.90",fontsize="36", font="Helvetica", fontcolor=black];
+27 [label="TP53,IDH1" ,shape=ellipse, style=filled, color="0.11000,0.774174,0.90",fontsize="36", font="Helvetica", fontcolor=black];
+45 [label="PTEN,NF1" ,shape=ellipse, style=filled, color="0.11000,0.751324,0.90",fontsize="36", font="Helvetica", fontcolor=black];
+1 [label="TP53" ,shape=ellipse, style=filled, color="0.07500,1,0.90",fontsize="36", font="Helvetica", fontcolor=black];
+2 [label="PTEN" ,shape=ellipse, style=filled, color="0.07500,0.658182,0.90",fontsize="36", font="Helvetica", fontcolor=black];
+3 [label="EGFR" ,shape=ellipse, style=filled, color="0.07500,0.728525,0.90",fontsize="36", font="Helvetica", fontcolor=black];
+	23->255
+	23->256
+	1->23
+	1->27
+	2->45
+	0->1
+	0->2
+	0->3
+}
