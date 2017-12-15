@@ -82,13 +82,14 @@ void RelabelOutlier(vector<NODE>& Tree,  int gn, int pdad, bool& tnew);
 void swapnodes(vector<NODE>& Tree, vector<FAM>& DAG, int& i, int& gramps, int& spart, bool& change);
 void SearchTrees( vector<FAM>& DAG, vector<NODE>& Tree);
  */
-Rcpp::List StructLearn(std::vector<std::vector<bool> >& Data, 
-                       std::vector<std::string>& GeneLabels, 
-                       std::vector<SimVar>& SimDAG, 
-                       int& NTrees, 
+Rcpp::List StructLearn(std::vector<std::vector<bool> >& Data,
+                       std::vector<std::string>& GeneLabels,
+                       std::vector<SimVar>& SimDAG,
+                       int& NTrees,
                        double& pthres);
 
-Rcpp::List BootstrapAnalysis(std::vector<std::vector<bool> >& Data, 
-                             std::vector<SimVar>& SimDAG, 
-                             int& NRep, 
-                             std::string& job);
+Rcpp::List BootstrapAnalysis(std::vector<std::vector<bool> >& Data,
+                             std::vector<SimVar>& SimDAG,
+                             int& NRep);
+
+

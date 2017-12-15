@@ -5,3 +5,7 @@ BML <- function(ma, ntrees, pthres, nrep) {
     .Call(`_BML_BML`, ma, ntrees, pthres, nrep)
 }
 
+writeDotFile <- function(bml, file) {
+    invisible(.Call(`_BML_writeDotFile`, bml, file))
+}
+
