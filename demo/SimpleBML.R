@@ -1,0 +1,5 @@
+library(BML)
+col_resic <- bml('demo/Data/COL_RESIC', 5, 0.5, 5)
+gmb_sm4   <- bml('demo/Data/GBM_SM4',   100, 0.1)
+Lung_SM4  <- bml('demo/Data/Lung_SM4',  5, 0.5, 5)
+ov_sm5    <- bml('demo/Data/OV_SM5',    5, 0.5, 5)
