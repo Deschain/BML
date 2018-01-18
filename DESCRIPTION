@@ -1,12 +1,17 @@
 Package: BML
 Type: Package
-Title: R wraper for Bayesian Mutation Landscape
-Version: 0.1.0
+Title: Bayesian Mutation Landscape
+Version: 0.2.0
 Date: 2017-12-10
 Author: Oscar Rodriguez
 Maintainer: Oscar Rodriguez <oscar.rodriguezzalonna@estudiante.uam.es>
-Description:  R wraper for Bayesian Mutation Landscape (BML), a probabilistic approach for reconstructing ancestral genotypes from tumor samples for much larger sets of genes than previously feasible. http://bml.molgen.mpg.de
-License: GPL (>= 2)
+Description: R wraper for Bayesian Mutation Landscape (BML) <http://bml.molgen.mpg.de>,
+  a probabilistic approach for reconstructing ancestral genotypes from tumor samples for
+  much larger sets of genes than previously feasible. 
+  In addition, the package contains the datasets used within the analysis of the paper.
+  <doi.org/10.1093/bioinformatics/btu319>
+License: GPL (>= 3)
 Imports: Rcpp (>= 0.12.14)
 LinkingTo: Rcpp
 SystemRequirements: C++11
+LazyData: true
