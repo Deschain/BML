@@ -1,27 +1,20 @@
 /*
- *  Algorithm.cpp
- *  
- *
- *  Created by Navodit Misra.
- *
  Copyright (c) 2012-2014 Navodit Misra.
  
  BML is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ BML is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with BML. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-BML is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with BML. If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
-/*	This is the main algorithm that controls and delegates specific tasks to other programs.		*/
 
 /* Generic includes */
 #include <fstream>
@@ -33,7 +26,6 @@ along with BML. If not, see <http://www.gnu.org/licenses/>.
 #include <cstdlib>
 #include <string>
 
-/* Data Structures & Utils */
 #include "Misra.h"
 
 using namespace std;
@@ -952,8 +944,8 @@ void  SimulateDAG( vector<NODE>& Tree, vector<SimVar>& SimDAG, vector< vector<bo
         y1+=data[SimDAG[j].vpi[k]]*(int(pow(2.0,k)));
       }
       z=SimDAG[j].vparam[y1]/(SimDAG[j].vparam[y1]+SimDAG[j].vparam[y1+(int(pow(2.0,y2)))] );
-      if(SimDAG[j].vparam[y1]+SimDAG[j].vparam[y1+(int(pow(2.0,y2)))] <.999){Rcout<<"Prob norm \n";}
-      if(SimDAG[j].vparam[y1]+SimDAG[j].vparam[y1+(int(pow(2.0,y2)))] >1.001){Rcout<<"Prob norm 2 \n";}
+      //if(SimDAG[j].vparam[y1]+SimDAG[j].vparam[y1+(int(pow(2.0,y2)))] <.999){Rcout<<"Prob norm \n";}
+      //if(SimDAG[j].vparam[y1]+SimDAG[j].vparam[y1+(int(pow(2.0,y2)))] >1.001){Rcout<<"Prob norm 2 \n";}
       if(z>x)
       {
         data[j]=0;
@@ -1446,7 +1438,7 @@ void EliminateRedundantCharacters(vector< vector<bool> >& Data, vector<vector<in
     }
     j++;
   }
-  Rcout<<Data[0].size()<<'\t'<<char_label.size()<<'\n';
+  //Rcout<<Data[0].size()<<'\t'<<char_label.size()<<'\n';
 }
 
 
@@ -1465,77 +1457,6 @@ bool IsInteger(string& inp, int& Num)
     }
   }
   return true;
-}
-
-/*	Read the data file, store taxon and gene names as a vector and partially initialize the variable "Tree".					*/
-
-void ParseDataMatrix(vector<vector<bool> >& Data, vector<string>& TaxonLabels, vector<string>& GeneLabels, string& dname)
-{
-  ifstream DataFile(dname.c_str());
-  if(!DataFile){throw 0;}else{Rcout<<"Reading "<<dname<<'\n';}
-  int NTaxa, NGenes;
-  string inp;
-  DataFile>>inp;
-  if(!IsInteger(inp,NTaxa))
-  {
-    cerr<<"\nNon integral entry "<<inp<<" for # taxa in file "<<dname<<'\n';
-    throw 1;
-  }
-  DataFile>>NGenes;
-  if(!IsInteger(inp,NTaxa))
-  {
-    cerr<<"\nNon integral entry "<<inp<<" for # genes/characters in file "<<dname<<'\n';
-    throw 1;
-  }
-  
-  for(int i=0;i<NGenes;i++)				//	Storing gene names, so that we can work with integers from
-  {										//	now on and have peace of mind. Gene names are weird !
-    DataFile>>inp;
-    GeneLabels.push_back(inp);
-  }
-  vector<int> hist(11);
-  for(int i=0;i<11;i++)
-  {
-    hist[i]=0;
-  }
-  for(int i=0;i<NTaxa;i++)
-  {
-    DataFile>>inp;
-    TaxonLabels.push_back(inp);	//	Storing taxon or sample names. Good riddance! These are even weirder than gene names.
-    vector<bool> v;
-    int nm=0;
-    for(int j=0;j<NGenes;j++)
-    {
-      string state;
-      DataFile>>state;
-      if(state=="0"){v.push_back(false);}
-      else
-      {
-        if(state=="1")
-        {
-          v.push_back(true);
-          nm++;
-        }
-        else
-        {
-          cerr<<"\nProblem parsing the data matrix entry for taxon (row) # "<<i<<" and gene (column) # "<<j<<'\n'<<"Either the entries are not 0/1 or Num Genes is incorrectly specified in the header as "<<NGenes<<'\n';
-          throw 1;
-        }
-      }
-    }
-    if(nm<10)
-    {
-      hist[nm]++;
-    }else{hist[10]++;}
-    Data.push_back(v);
-  }
-  for(int i=0;i<11;i++)
-  {
-    Rcout<<i<<'\t'<<hist[i]<<endl;
-  }
-  Rcout<<"\nTaxa initialized\n"<<Data.size()<<" taxa and "<<NGenes<<" genes/characters found."<<'\n';
-  DataFile.close();
-  
 }
 
 
@@ -1900,8 +1821,8 @@ void SearchTrees( vector<FAM>& DAG, vector<NODE>& Tree)
   {
     
     opt=true;
-    Rcout<<" Tree size = "<<Tree.size()<<" present score "<<bscore<<'\n';
-    Rcout<<"degree "<<deg<<endl;
+    //Rcout<<" Tree size = "<<Tree.size()<<" present score "<<bscore<<'\n';
+    //Rcout<<"degree "<<deg<<endl;
     
     for(int i=1; i<Tree.size();i++)
     {
@@ -1950,7 +1871,7 @@ void SearchTrees( vector<FAM>& DAG, vector<NODE>& Tree)
       }
     }
   }
-  Rcout<<"\n Search trees done \n";
+  //Rcout<<"\n Search trees done \n";
   double finsc=0.0;
   
   SearchDAGs(DAG, Tree,'y');
@@ -1961,9 +1882,7 @@ void SearchTrees( vector<FAM>& DAG, vector<NODE>& Tree)
     nedges+=DAG[j].npa;
     
   }
-  Rcout<<nedges<<" edges and log-likl = "<<finsc<<'\n';
-  
-  
+  //Rcout<<nedges<<" edges and log-likl = "<<finsc<<'\n';
 }
 
 List StructLearn(vector< vector<bool> >& Data, vector<string>& GeneLabels, vector<SimVar>& SimDAG, int& NTrees, double& pthres)
@@ -2019,7 +1938,7 @@ List StructLearn(vector< vector<bool> >& Data, vector<string>& GeneLabels, vecto
     *	variable "Phy", cf. InitTree.cpp and perform local pruning													*/
     
     InitTree(Phy,DAG);
-    Rcout<<"tree initialized\n Seed "<<Seed+1<<" out of "<<NTrees<<endl;
+    //Rcout<<"tree initialized\n Seed "<<Seed+1<<" out of "<<NTrees<<endl;
     LocalPruning(DAG,Phy);
     
     double dagscore=0.0;
@@ -2045,8 +1964,11 @@ List StructLearn(vector< vector<bool> >& Data, vector<string>& GeneLabels, vecto
       
     }
     
+    //Check  user interrupt
+    Rcpp::checkUserInterrupt();
+    
   }
-  Rcout<<"writing Pathfile"<<endl;
+  //Rcout<<"writing Pathfile"<<endl;
   ParseDAG(BayesN, SimDAG, GeneLabels,char_label);
   result["DAG"] = WriteLandscape(SimDAG, Emtree, GeneLabels, char_label,pthres);
   return result;
@@ -2074,7 +1996,7 @@ List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
     
     SimulateDAG(Tree, SimDAG, Data);
     
-    Rcout<<"\nGenerated bootstrap replicate "<<Brep<<" out of "<<NRep<<'\n';
+    //Rcout<<"\nGenerated bootstrap replicate "<<Brep<<" out of "<<NRep<<'\n';
 
     GlobalPruning(BayesNP,Tree);
     SearchDAGs(BayesNP,Tree,'n');
@@ -2096,7 +2018,7 @@ List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
     
     vector<FAM> DAG(BayesNP.size());					/*	Define the basic network object	*/
     InitTree(Tree, BayesNP);
-    Rcout<<"tree initialized\n";
+    //Rcout<<"tree initialized\n";
     InitDAG(DAG, BayesNP);
     LocalPruning(DAG,Tree);
     
@@ -2106,7 +2028,7 @@ List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
     *	in variable "Tree" using the MPE (Most Probable Explanation) criterion. 			*/
     
     SearchTrees(DAG,Tree);
-    Rcout<<Brep<<" out of "<<NRep<<" bootstrap replicates analyzed\n";
+    //Rcout<<Brep<<" out of "<<NRep<<" bootstrap replicates analyzed\n";
     for(int i=0;i<netrel1.size();i++)
     {
       for(int j=0;j<netrel1.size();j++)
@@ -2116,6 +2038,9 @@ List BootstrapAnalysis(vector< vector<bool> >& Data, vector<SimVar>& SimDAG, int
     }
     LandBoot(SimDAG, landrel2, DAG);
     EdBoot(EdList,SimDAG,edrel, DAG);
+    
+    //Check  user interrupt
+    Rcpp::checkUserInterrupt();
   }
   // TPFPAnalysis(netrel1,netrel2,netrel3,SimDAG,NRep,job);
   List result = TPFPAnalysis(netrel1,netrel2,netrel3,SimDAG,NRep);
