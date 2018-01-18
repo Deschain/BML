@@ -1,5 +1,5 @@
 library(BML)
-Lung_SM4 <- bml('demo/Data/Lung_SM4',   10, 0.1, 100)
+Lung_SM4 <- bml(lung_sm4_data,   10, 0.1, 100)
 
 data <- as.data.frame(t(log(Lung_SM4$bootstrap$EdgeProbabilities[(9+3):9,])))
 boxplot(data, horizontal = TRUE, col = rev(c('red', 'lightblue', 'red','grey')), yaxt='n')
