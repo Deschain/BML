@@ -1,3 +1,4 @@
 library(BML)
-col_resic <- bml('demo/Data/COL_RESIC', 10, 0.1)
-ad_ma <- adjacent_matrix(col_resic)
+col_resic <- bml(col_resic_data, 10, 0.1)
+adjacency_matrix(col_resic)
+
