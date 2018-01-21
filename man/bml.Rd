@@ -7,32 +7,32 @@ Creates a BML object
 Calculates a BML object
 }
 \usage{
-bml(file, ntree, pthres)
+bml(dataset, ntree, threshold, rep = 0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{file}{
-File name
-}
-  \item{ntree}{
-Number of tree
-}
-  \item{pthres}{
-Still to know
-}
+  \item{dataset}{Data frame or matrix of 0's and 1's with genes as columns and observations as rows. Genes has to be named}
+  \item{ntree}{Num random restarts, the number of random restarts for searching the tree space}
+  \item{threshold}{Threshold for inferring paths, the level of detail in output path file}
+  \item{rep}{Number of boostrap he number of bootstrap replicates you want to include, if nrep = 0 (default) no bootstrap will be performed}
+
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-%%  ~Describe the value returned
+Returns an object of class BML which is a list witht following items
 %%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
+\item{num_edges }{Number of egdes}
+\item{num_genes }{Number of genes}
+\item{num_unpruned_edges }{Number of unpruned edges}
+\item{num_noparent_after_global_pruning }{Number of nodes with no parent after global pruning}
+\item{DAG}{Directed aciclic graph}
+\item{Bootstrap}{Bootrstrap results}
 %% ...
 }
 \references{
-%% ~put references to the literature/web site here ~
+http://bml.molgen.mpg.de/
 }
 \author{
 %%  ~~who you are~~
@@ -47,20 +47,11 @@ Still to know
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+# Normal execution
+bml(BML::col_resic, 10, 0.2)
 
-## The function is currently defined as
-function (file, ntree, pthres) 
-{
-    data <- read.table(file, header = TRUE, row.names = 1, skip = 1)
-    stopifnot(ntree > 0)
-    stopifnot(pthres > 0, pthres < 1)
-    bml <- BML(as.matrix(data), ntree, pthres)
-    attr(bml, "class") <- "bml"
-    return(bml)
-  }
+# Normal excuction with bootstrap
+bml(BML::col_resic, 10, 0.5, 20)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
