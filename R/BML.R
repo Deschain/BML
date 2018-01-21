@@ -1,33 +1,57 @@
 
-bml <- function(data, ntree, threshold, rep = 0) {
-  stopifnot(ntree > 0)
-  stopifnot(threshold > 0.0, threshold<1.0)
-  # Add sanity checks
-  bml <- BML(as.matrix(data), ntree, threshold, rep)
+bml <- function(dataset, ntree, threshold, rep = 0) {
+  
+  #Asserts
+  if (ntree <= 0) {
+    stop("Ntree can't be less or equal 0")
+  }
+  
+  if (threshold < 0.0 | threshold > 1.0){
+    stop("Threshold must be between 0.0 and 1.0")
+  }
+  
+  if (!(is.matrix(dataset))){
+    stop("Data must be a matrix class")
+  }
+  
+  if (any(is.na(dataset))){
+    stop("Data can't have NAs values")
+  }
+  
+  if (!(all(dataset == 0 | dataset == 1))){
+    stop("Only 0 or 1 values are accepted (mutated or not)")
+  }
+  
+  if(is.null(colnames(dataset))) {
+    stop("Data must have gene names as column names")
+  }
+  
+  bml <- BML(dataset, ntree, threshold, rep)
   # Maybe store input data aswell
+  
   class(bml) <- append(class(bml),"bml")
   return(bml)
 }
 
 
-print.bml <- function(bml) {
+print.bml <- function(bml, ...) {
   cat("Total Num of Edges ", bml$num_edges, "\n")
   cat("Num of unpruned edges ", bml$num_unpruned_edges, "\n")
   cat("Total number of genes ", bml$num_genes, "\n")
   cat("Number of genes with no parent after global pruning ", bml$num_noparent_after_global_pruning, "\n")
 }
 
-summary.bml <- function(bml) {
+summary.bml <- function(bml, ...) {
   print(bml)
 }
 
-adjacency_matrix <- function(data) {
-  UseMethod("adjacency_matrix", data)
+adjacency_matrix <- function(bml) {
+  UseMethod("adjacency_matrix", bml)
 }
 
 
 adjacency_matrix.default <- function(data) {
-  print("Adjancency matrix not implemented for class")
+  cat(paste("Adjancency matrix is not implemented for class", class(data)))
 }
 
 
@@ -46,7 +70,6 @@ writeDotFile <- function(data, file) {
 }
 
 
-writeDotFile.bml <- function(data, file)
-{
+writeDotFile.bml <- function(data, file) {
   writeDotFile(data, file)
 }
