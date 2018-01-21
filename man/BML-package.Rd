@@ -1,13 +1,10 @@
-\name{BML-package}
-\alias{BML-package}
-\alias{BML}
+\name{BML}
 \docType{package}
 \title{
-  A short title line describing what the package does
+  BML: A package to calcuate Bayesian Mutation Landscape  
 }
 \description{
-  A more detailed description of what the package does. A length
-  of about one to five lines is recommended.
+  This package is a wrap for the \link[http://bml.molgen.mpg.de/]{BML} code
 }
 \details{
   This section should provide a more detailed overview of how to use the
@@ -31,4 +28,5 @@ Maintainer: Your Name <your@email.com>
      ## Optional simple examples of the most important functions
      ## These can be in \dontrun{} and \donttest{} blocks.   
   }
+
 }
