@@ -1,0 +1,9 @@
+SimpleBML                       Create of BML object with
+SimpleAdjacentMatrix            Caluclate the adjacency matrix of a BML object
+WriteDot                        Write the dot file for the DAG of the BML object
+SimpleGraphAM                   Plot the DAG of the BML object using Graph::GraphAM classes
+SimpleGraphNEL                  Plot the DAG of the BML object using Graph::GraphNEL classes
+SimpleiGraph                    Plot the DAG of the BML object using iGraph
+BootstrapAdditivity             Plot the bootstrap additivity
+BootstrapProbCommonMutations    Plot the bootstrap probability of common mutations
+BootstrapTruePositives          Plot the bootstrap true positives
